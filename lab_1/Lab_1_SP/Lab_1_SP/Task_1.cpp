@@ -8,8 +8,9 @@ using namespace std;
 
 #define MAX_ARGUMENT_LENGTH 2
 // functions for implementation -s argument
-void GetArgInsideProgramm();
-void CheckArg(char* argForProgramm);
+void ImplementationShowErrorArg();
+void ImplementationShowSystemInfoArg();
+void StartWithoutArgs();
 void GlobalMemoryInfoPrint();
 void GetSystemInfoPrint();
 
@@ -26,18 +27,52 @@ int main(int argc, char *argv[])
 
     if (argc != 2)
     {
-        GetArgInsideProgramm();
+        StartWithoutArgs();
     }
     else
     {
-        CheckArg(argv[1]);
+        if (strcmp(argv[1], "-e") == 0)
+        {
+            ImplementationShowErrorArg();
+        }
+        else if (strcmp(argv[1], "-s") == 0)
+        {
+            ImplementationShowSystemInfoArg();
+        }
+        else // error argument
+        {
+            StartWithoutArgs();
+        }
     }
     return 0;
 }
 
+void ImplementationShowErrorArg()
+{
+    // call function for print error 
+    if (ThrowOutOfMemoryError())
+    {
+        ShowError();
+    }
+    else
+    {
+        printf("Sorry, you have too much free memory");
+    }
+}
+
+void ImplementationShowSystemInfoArg()
+{
+    // call function for  print information about system
+    GlobalMemoryInfoPrint();
+    GetSystemInfoPrint();
+}
+
 bool ThrowOutOfMemoryError()
 {
-    HLOCAL pAllocMem = LocalAlloc(LMEM_FIXED, 10000000000); // try to alloc 10 GB memory
+    DWORD userMemCount = 0;
+    MEMORYSTATUS memStatus;
+    GlobalMemoryStatus(&memStatus);
+    HLOCAL pAllocMem = LocalAlloc(LMEM_FIXED, memStatus.dwTotalVirtual + 5000000000); // total virtual memory + 5 GB
     if (pAllocMem == NULL)
     {
         return true;
@@ -46,32 +81,6 @@ bool ThrowOutOfMemoryError()
     {
         LocalFree(pAllocMem);
         return false;
-    }
-}
-
-void CheckArg(char* argForProgramm)
-{
-    if (strcmp(argForProgramm, "-e") == 0)
-    {
-        // call function for print error 
-        if (ThrowOutOfMemoryError())
-        {
-            ShowError();
-        }
-        else
-        {
-            printf("Sorry, you have too much free memory");
-        }
-    }
-    else if (strcmp(argForProgramm, "-s") == 0)
-    {
-        // call function for  print information about system
-        GlobalMemoryInfoPrint();
-        GetSystemInfoPrint();
-    }
-    else // error argument
-    {
-        GetArgInsideProgramm();
     }
 }
 
@@ -89,26 +98,19 @@ void ShowError()
     return;
 }
 
-void GetArgInsideProgramm()
+void StartWithoutArgs()
 {
-    char newArg[MAX_ARGUMENT_LENGTH+1];
     printf("You don`t input argument or input wrong argument. Programm supports 2 arguments:\n");
     printf("'-e' - print error\n");
     printf("'-s' - print information about system\n\n");
-    printf("Please, input new argument:");
-    scanf_s("%2s", newArg, 3);
-    CheckArg(newArg);
-    return;
+    exit(EXIT_FAILURE);
 }
-
-
 
 // Func for GlobalMemoryStatus() information print
 void GlobalMemoryInfoPrint()
 {
     MEMORYSTATUS memStatusStruct;
     GlobalMemoryStatus(&memStatusStruct);
-    
     cout << "   *** information about the current state of both physical and virtual memory ***" << endl;
     cout << "Approximate percentage of physical memory that is in use:"
         << memStatusStruct.dwMemoryLoad << endl;
