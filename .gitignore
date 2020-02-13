@@ -42,6 +42,11 @@
 *.x86_64
 *.hex
 
+# debug folders
+*/.vs
+**/Debug
+**/x64
+
 # Debug files
 *.dSYM/
 *.su
