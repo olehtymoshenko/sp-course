@@ -4,14 +4,12 @@
 #include <locale.h>
 #include <iostream>
 
-
 using namespace std;
-
 
 #define ANSI_KEY "-a"
 #define UNICODE_KEY "-u"
 
-#define SIZE_BUFF_FOR_READING_FILE 2048
+#define SIZE_BUFF_FOR_READING_FILE 1024
 
 void ANSI_To_Unicode(LPCSTR);
 void Unicode_To_ANSI(LPCSTR);
@@ -20,15 +18,13 @@ bool ConcatFileNameWithString(char* FileName, char* StringToConcat, char* result
 
 int main(int argc, char* argv[])
 {
-    setlocale(LC_CTYPE, "rus");
-
+	setlocale(LC_ALL, "rus");
     if (argc != 3)
     {
-        fprintf(stderr, "Ошибка! Не переданы все аргументы дял программы\n");
-        fprintf(stderr, "Необходимая форма: ""имя_программы ключ_для_кодировки имя_файла_для_перекодирования\n");
-        fprintf(stderr, "Ключи для кодировки: '-a'  - текст в ANSI кодировке\n");
-        fprintf(stderr, "Ключи для кодировки: '-u'  - текст в Unicode кодировке\n");
-        system("Pause");
+        fprintf(stderr, "Error! Incorrect arguments count for programm\n");
+        fprintf(stderr, "Necessary keys to run programm: ""-codepage_key filename_for_recoding\n");
+        fprintf(stderr, "Codepage key: '-a' - ANSI input\n");
+		fprintf(stderr, "Codepage key: '-u' - Unicode input\n");
         return 0;
     }
     else
@@ -43,10 +39,10 @@ int main(int argc, char* argv[])
         }
         else
         {
-            fprintf(stderr, "Ошибка ввода параметров\n");
+            fprintf(stderr, "Incorrect arguments\n");
         }
     }
-    fprintf(stdout, " ***Конвертация была успешно выполнена *** ");
+    fprintf(stdout, " *** Recoding completed successfully *** ");
     return 0;
 }
 
@@ -55,7 +51,7 @@ void ANSI_To_Unicode(LPCSTR fileName)
     HANDLE handleSourceFile, handleDestinationFile; // handles to files 
 
     CHAR rdBuff[SIZE_BUFF_FOR_READING_FILE]; // buff to read text from source file
-    WCHAR buffCharsEncodedToWChar_t[SIZE_BUFF_FOR_READING_FILE]; // buff contain encoded ASCI text to Unicode
+    WCHAR * buffCharsEncodedToWChar_t; // buff contain encoded ASCI text to Unicode
 
     DWORD countReadedChars, countWritenChars; // counters of read Symbols(in ReadFIle) and writen Symbols(in WriteFile)  
     BOOL resultRdFile = true; 
@@ -63,7 +59,7 @@ void ANSI_To_Unicode(LPCSTR fileName)
 	char additionalTextToFileName[] = "_encoded_To_Unicode";
 	char nameDestinationFile[FILENAME_MAX]; // name to file with recoded text
 	ConcatFileNameWithString((char*)fileName, additionalTextToFileName, nameDestinationFile, FILENAME_MAX);
-    printf(" *** Перекодированый текст будет находится в *** \n %s\n", nameDestinationFile);
+    printf(" *** Recoded file will be located in *** \n %s\n", nameDestinationFile);
     // OPEN FILES
     handleSourceFile = CreateFile(fileName, GENERIC_READ, FILE_SHARE_READ,
                                   NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -80,17 +76,25 @@ void ANSI_To_Unicode(LPCSTR fileName)
         exit(EXIT_FAILURE);
     }
     // In cycle read all file in blocks of size - SIZE_BUFF_FOR_READING_FILE
-    while (((resultRdFile = ReadFile(handleSourceFile, &rdBuff, sizeof(rdBuff), &countReadedChars, NULL)) != 0) && (countReadedChars != 0))
+    while (((resultRdFile = ReadFile(handleSourceFile, &rdBuff, sizeof(rdBuff), &countReadedChars, NULL)) != false) && (countReadedChars != 0))
     {
+		// find necessary buff size for recoded text
+		int sizeToAllocate = MultiByteToWideChar(GetACP(), 0, rdBuff, countReadedChars, NULL, 0);
+
+		// allocate necessary buff
+		buffCharsEncodedToWChar_t = (WCHAR *)calloc(sizeToAllocate, sizeof(WCHAR));
+
         // recode text to Unicode from ASCI
-        MultiByteToWideChar(GetACP(), 0, rdBuff, countReadedChars, buffCharsEncodedToWChar_t, SIZE_BUFF_FOR_READING_FILE);
+        MultiByteToWideChar(GetACP(), 0, rdBuff, countReadedChars, buffCharsEncodedToWChar_t, sizeToAllocate);
 
         // write recoded block to new file
-        if (!WriteFile(handleDestinationFile, buffCharsEncodedToWChar_t, countReadedChars*2, &countWritenChars, NULL))
+        if ((!WriteFile(handleDestinationFile, buffCharsEncodedToWChar_t, sizeToAllocate * sizeof(WCHAR), &countWritenChars, NULL)) ||
+			(countWritenChars != sizeToAllocate * sizeof(WCHAR)))
         {
             ShowError();
             exit(EXIT_FAILURE);
         }
+		free(buffCharsEncodedToWChar_t);
     }
     if (resultRdFile == false && countReadedChars != 0)
     {
@@ -106,10 +110,9 @@ void Unicode_To_ANSI(LPCSTR fileName)
 {
     HANDLE handleSourceFile, handleDestinationFile; // handles to files 
 
-    WCHAR rdBuff[SIZE_BUFF_FOR_READING_FILE]; // buff to read text from source file
-    CHAR buffWCHARSEncodedToCHAR[SIZE_BUFF_FOR_READING_FILE]; // buff contain encoded ASCI text to Unicode
-    CCHAR unknownSymb(254);
-    BOOL isUsedUnknownSymb = false;
+    CHAR rdBuff[SIZE_BUFF_FOR_READING_FILE]; // buff to read text from source file
+	WCHAR * rawBytesEncodedToWchar; // buff to contain encoded raw bytes to wide char
+    CHAR * buffWCHARSEncodedToCHAR; // buff contain encoded ASCI text to Unicode
 
     DWORD countReadedBytes, countWritenBytes; // counters of read Symbols(in ReadFIle) and writen Symbols(in WriteFile)  
     BOOL resultRdFile = true;
@@ -118,38 +121,60 @@ void Unicode_To_ANSI(LPCSTR fileName)
 	char nameDestinationFile[FILENAME_MAX]; // name to file with recoded text
 
 	ConcatFileNameWithString((char*)fileName, additionalTextToFileName, nameDestinationFile, FILENAME_MAX);
-    printf(" *** Перекодированый текст будет находится в *** \n %s\n", nameDestinationFile);
+    printf(" *** Recoded file will be located in *** \n %s\n", nameDestinationFile);
     // OPEN FILES
     handleSourceFile = CreateFile(fileName, GENERIC_READ, FILE_SHARE_READ,
-        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+								  NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (handleSourceFile == INVALID_HANDLE_VALUE)
     {
         ShowError();
         exit(EXIT_FAILURE);
     }
+
     handleDestinationFile = CreateFile(nameDestinationFile, GENERIC_WRITE, 0,
-        NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+									   NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (handleDestinationFile == INVALID_HANDLE_VALUE)
     {
         ShowError();
         exit(EXIT_FAILURE);
     }
+	// read first 2 bytes which mean ending style (BE or LE), because it doesnt need for ansi files
     if (!ReadFile(handleSourceFile, &rdBuff, 2, &countReadedBytes, NULL))
     {
         ShowError();
         exit(EXIT_FAILURE);
     }
+
     // In cycle read all file in blocks of size - SIZE_BUFF_FOR_READING_FILE
-    while (((resultRdFile = ReadFile(handleSourceFile, &rdBuff, sizeof(rdBuff), &countReadedBytes, NULL)) != 0) && (countReadedBytes != 0))
+    while (((resultRdFile = ReadFile(handleSourceFile, &rdBuff, sizeof(rdBuff), &countReadedBytes, NULL)) != false) && (countReadedBytes != 0))
     {
-        WideCharToMultiByte(GetACP(), 0, rdBuff, countReadedBytes / sizeof(rdBuff[0]), buffWCHARSEncodedToCHAR,
-                             countReadedBytes / sizeof(rdBuff[0]), NULL, NULL);
-        // write recoded block to new file
-        if (!WriteFile(handleDestinationFile, buffWCHARSEncodedToCHAR, countReadedBytes / sizeof(rdBuff[0]), &countWritenBytes, NULL))
+		// Read raw bytes, than get count of unicode symbols in this raw bytes
+		int countUnicodeSymb = MultiByteToWideChar(GetACP(), 0, rdBuff, countReadedBytes, NULL, 0);
+
+		// Allocate buff for containing raw bytes encoded to wide char
+		rawBytesEncodedToWchar = (WCHAR*)calloc(countUnicodeSymb, sizeof(WCHAR));
+		
+		// Encode raw bytes to wide char
+		MultiByteToWideChar(GetACP(), 0, rdBuff, countReadedBytes,
+							rawBytesEncodedToWchar, countUnicodeSymb);
+
+		// Get necessary count bytes to contain convert wide char array to multibyte array
+		int sizeToAlloc = WideCharToMultiByte(CP_ACP, 0, rawBytesEncodedToWchar, countUnicodeSymb, NULL, 0, NULL, NULL);
+        
+		// Allocate necessary buff
+		buffWCHARSEncodedToCHAR = (CHAR *) calloc(sizeToAlloc, sizeof(CHAR));
+
+		// convert wide char to multibyte
+		WideCharToMultiByte(CP_ACP, 0, rawBytesEncodedToWchar, countUnicodeSymb, buffWCHARSEncodedToCHAR,
+							sizeToAlloc, NULL, NULL);
+		// write recoded block to new file
+        if ((!WriteFile(handleDestinationFile, buffWCHARSEncodedToCHAR, sizeToAlloc, &countWritenBytes, NULL)) || (countWritenBytes != sizeToAlloc))
         {
             ShowError();
             exit(EXIT_FAILURE);
         }
+		free(rawBytesEncodedToWchar);
+		free(buffWCHARSEncodedToCHAR);
     }
     if (resultRdFile == false && countReadedBytes != 0)
     {
