@@ -46,6 +46,8 @@
 */.vs
 **/Debug
 **/x64
+**/v16
+
 
 # Debug files
 *.dSYM/
