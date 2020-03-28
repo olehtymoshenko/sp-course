@@ -178,18 +178,6 @@ bool ModifyRecord(HANDLE hRecordsFile, DWORD idToModify)
 	recBuff.wChangeRecordCounter++;
 	
 	// write record to file
-	//if (SetFilePointer(hRecordsFile, sizeof(FILE_FOR_RECORDS_HEADER) + sizeof(USER_RECORD) * idToModify,
-	//	NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-	//{
-	//	return false;
-	//}
-
-	//if ((WriteFile(hRecordsFile, &recBuff, sizeof(USER_RECORD), &cBytes, NULL) == false) ||
-	//	(cBytes != sizeof(USER_RECORD)))
-	//{
-	//	return false;
-	//}
-
 	if (!WriteRecordToFile(hRecordsFile, recBuff, (sizeof(FILE_FOR_RECORDS_HEADER) + sizeof(USER_RECORD) * idToModify)))
 	{
 		return false;
