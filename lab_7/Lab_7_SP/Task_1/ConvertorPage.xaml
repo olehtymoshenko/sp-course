@@ -1,0 +1,184 @@
+﻿<Page
+    x:Class="Task_1.ConvertorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Task_1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="980" MinHeight="300">
+
+    <Page.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"></Setter>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="18"></Setter>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" Padding="5" BorderBrush="Black"
+                x:Name="menu_btn" Click="Menu_btn_Click">Menu</Button>
+        <SplitView x:Name="mode_spliteView" IsPaneOpen="False" Grid.Column="1">
+            <SplitView.Pane>
+                <StackPanel Orientation="Vertical" Padding="10">
+                    <Button x:Name="showVolumeConv_btn" Click="ShowVolumeConv_btn_Click">Volume conversion</Button>
+                    <Button x:Name="showLenghtConv_btn" Click="ShowLenghtConv_btn_Click">Distance conversion</Button>
+                    <Button x:Name="showWidthConv_btn" Click="ShowWidthConv_btn_Click">Weight conversion</Button>
+                    <Button x:Name="backToMainPage_btn" Click="BackToMainPage_btn_Click">Back</Button>
+                </StackPanel>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <StackPanel>
+                    <!-- Lenght Convertor-->
+                    <Grid x:Name="Lenght_grid" BorderBrush="WhiteSmoke" BorderThickness="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontSize="30" Text="Distance conversion"/>
+
+                        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock  Text="Meters:" Padding="5" Height="30"/>
+                            <TextBox x:Name="meters_tbox" Height="35" Width="200"/>
+                        </StackPanel>
+                        <Button Grid.Row="1" Grid.Column="1" x:Name="fromMetricLenghtConversion" Click="FromMetricLenghtConversion_Click" FontSize="22" Background="WhiteSmoke" 
+                        BorderBrush="Black" Content="Convert" VerticalAlignment="Center" Height="40" Width="110" HorizontalAlignment="Center"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="miles_tblock"><Run Text="Miles"/></TextBlock>
+                                <TextBox x:Name="miles_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="yards_tblock"><Run Text="Yards"/></TextBlock>
+                                <TextBox x:Name="yards_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="inch_tblock"><Run Text="Inches"/></TextBlock>
+                                <TextBox x:Name="inch_tbox" Margin="10,5,0,5" Width="161"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="foot_tblock"><Run Text="Foots"/></TextBlock>
+                                <TextBox x:Name="foot_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--Volume  Convertor-->
+
+                    <Grid x:Name="Volume_grid" BorderBrush="WhiteSmoke" BorderThickness="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontSize="30" Text="Volume conversion"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="cubicMeter_tblock"><Run Text="Cubic meter"/></TextBlock>
+                                <TextBox x:Name="cMeter_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="cCentim_tblock"><Run Text="Cubic centimeter"/></TextBlock>
+                                <TextBox x:Name="cCentim_tbox" Margin="10,5,0,5" Width="132"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="liter_tblock"><Run Text="Liters"/></TextBlock>
+                                <TextBox x:Name="liter_tbox" Margin="10,5,0,5" Width="224"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Grid.Column="1" x:Name="fromMetricVolumeConversion" Click="FromMetricVolumeConversion_Click" FontSize="22" Background="WhiteSmoke" 
+                        BorderBrush="Black" Content="Convert" VerticalAlignment="Center" Height="40" Width="110" HorizontalAlignment="Center"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="pint_tblock"><Run Text="Pints"/></TextBlock>
+                                <TextBox x:Name="pint_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="gallon_tblock"><Run Text="Gallons"/></TextBlock>
+                                <TextBox x:Name="gallon_tbox" Margin="10,5,0,5" Width="148"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <!-- Width Convertor-->
+
+                    <Grid x:Name="Width_grid" BorderBrush="WhiteSmoke" BorderThickness="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" TextAlignment="Center" FontSize="30" Text="Weight conversion"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="kg_tblock"><Run Text="Kilograms"/></TextBlock>
+                                <TextBox x:Name="kg_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="gram_tblock"><Run Text="Gram"/></TextBlock>
+                                <TextBox x:Name="gram_tbox" Margin="10,5,0,5" Width="204"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="tonne_tblock"><Run Text="Tonne"/></TextBlock>
+                                <TextBox x:Name="tonne_tbox" Margin="10,5,0,5" Width="197"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="centner_tblock"><Run Text="Centner"/></TextBlock>
+                                <TextBox x:Name="centner_tbox" Margin="10,5,0,5" Width="182"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Grid.Column="1" x:Name="fromMetricWidthConversion" Click="FromMetricidthConversion_Click" FontSize="22" Background="WhiteSmoke" 
+                        BorderBrush="Black" Content="Convert" VerticalAlignment="Center" Height="40" Width="110" HorizontalAlignment="Center"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="pound_tblock"><Run Text="Pounds"/></TextBlock>
+                                <TextBox x:Name="pound_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock x:Name="ounce_tblock"><Run Text="Ounces"/></TextBlock>
+                                <TextBox x:Name="ounce_tbox" Margin="10,5,0,5" Width="170"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    
+                </StackPanel>
+            </SplitView.Content>
+        </SplitView>
+    </Grid>
+</Page>

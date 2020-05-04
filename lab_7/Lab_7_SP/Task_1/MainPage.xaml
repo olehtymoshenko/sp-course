@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="Task_1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Task_1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Height="773" Width="980">
+
+    <Page.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="10"></Setter>
+            <Setter Property="FontSize" Value="36"></Setter>
+            <Setter Property="Padding" Value="10"></Setter>
+        </Style>
+    </Page.Resources>
+    
+    <Grid>
+        <Hub Header="Labwork 7, System programming" x:Name="contentHub" SectionHeaderClick="ContentHub_SectionHeaderClick">
+            <HubSection x:Name="mainSection" Header="Main page" Width="550">
+                <DataTemplate>
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                            <TextBlock>This is main application page</TextBlock>
+                            <TextBlock>Use "see more" buttons to change current page to other</TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+            <HubSection x:Name="convertorSection" Header="Convertor" IsHeaderInteractive="True">
+            </HubSection>
+            <HubSection x:Name="aboutAuthorSection" Header="About author" IsHeaderInteractive="True">
+            </HubSection>
+        </Hub>
+        <StackPanel/>
+
+
+
+    </Grid>
+</Page>
