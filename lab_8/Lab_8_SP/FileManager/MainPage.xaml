@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="FileManager.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FileManager"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="600" Height="500">
+    
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- row 0-->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button x:Name="openFolderDialog_btn" Click="OpenFolderDialog_btn_Click" Margin="0,0,5,0">Pick folder</Button>
+            <Button x:Name="copyFile" Click="CopyFile_Click" Margin="0,0,5,0">Copy selected file </Button>
+            <Button x:Name="deleteFile" Click="DeleteFile_Click" Margin="0,0,5,0">Delete selected file</Button>
+            <Button Click="exit_btn_click">Exit</Button>
+        </StackPanel>
+        <Button Grid.Row="0" HorizontalAlignment="Right" Click="goParentFolder_btn_click">Back to parent folder</Button>
+        
+        <!-- row 1-->
+        <StackPanel  Grid.Row="1" Orientation="Horizontal" Margin="4">
+            <TextBlock Text="Current folder:" Margin="5, 0,0,5" VerticalAlignment="Center"></TextBlock>
+            <TextBox x:Name="currentFolderPath_tblock"  Width="490" Margin="5, 0,0,5" VerticalAlignment="Top"/>
+        </StackPanel>
+        <!-- row 2-->
+        <ListView x:Name="foldersList" Grid.Row="2" Width="600" Height="460" SelectionMode="Single"
+                  IsItemClickEnabled="True" ItemClick="FoldersList_ItemClick">
+            <ListView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid Width="600">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Name" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="1" Text="Size" HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Text="Creation date" HorizontalAlignment="Center"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:FileManagerItem">
+                    <Grid Width="600">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{x:Bind Name}"  HorizontalAlignment="Left"></TextBlock>
+                        <TextBlock Grid.Column="1" Text="{x:Bind Size}"  HorizontalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Column="2" Text="{x:Bind CreationDate}"  HorizontalAlignment="Center"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>
