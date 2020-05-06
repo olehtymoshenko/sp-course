@@ -1,4 +1,4 @@
-#include "Main.h"
+#include "Task_3.h"
 
 using namespace std;
 
@@ -58,19 +58,19 @@ DWORD WINAPI StartNewThreadWithCriticalSection(LPVOID param)
 {
 	switch ((int)param)
 	{
-	case 0: // sum 
+	case SUM_OPERATION:
 	{
 		EnterCriticalSection(&gCriticalSection);
 		ArrNumsSum(arrayForCalculating);
 		LeaveCriticalSection(&gCriticalSection);
 	} break;
-	case 1: // sort
+	case BUBBLE_SORT_OPERATION:
 	{
 		EnterCriticalSection(&gCriticalSection);
 		BubbleSort(arrayForCalculating);
 		LeaveCriticalSection(&gCriticalSection);
 	} break;
-	case 2: // avarage
+	case AVARAGE_OPERATION:
 	{
 		EnterCriticalSection(&gCriticalSection);
 		CalcAvarageValue(arrayForCalculating);
@@ -87,15 +87,15 @@ DWORD WINAPI StartNewThreadWithoutCriticalSection(LPVOID param)
 {
 	switch ((int)param)
 	{
-	case 0: // sum 
+	case SUM_OPERATION:
 	{
 		ArrNumsSum(arrayForCalculating);
 	} break;
-	case 1: // sort
+	case BUBBLE_SORT_OPERATION:
 	{
 		BubbleSort(arrayForCalculating);
 	} break;
-	case 2: // avarage
+	case AVARAGE_OPERATION: 
 	{
 		CalcAvarageValue(arrayForCalculating);
 	} break;

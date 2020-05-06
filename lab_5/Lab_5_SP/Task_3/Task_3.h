@@ -7,6 +7,10 @@
 #define ARRAY_NUM_MIN_BOUNDARY 0 // low bound for rand array nums
 #define ARRAY_NUM_MAX_BOUNDARY 100000 // high bound for rand arrray nums
 
+#define SUM_OPERATION 0
+#define BUBBLE_SORT_OPERATION 1
+#define AVARAGE_OPERATION 2
+
 ////////////////// functions prototypes 
 DWORD WINAPI StartNewThreadWithCriticalSection(LPVOID param);
 DWORD WINAPI StartNewThreadWithoutCriticalSection(LPVOID param);
