@@ -1,16 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #include "Main.h"
 
-///// functions delcaration
-void PrintMenu();
-void StartArchiving(TCHAR* filePath, TCHAR* archPath);
-void StartExtracting(TCHAR* archPath, TCHAR* extractArchPath);
-void ShowError();
-void CreateNew7zipProcess(TCHAR* cmdForNewProc);
-
 using namespace std;
 
-/// implementation
+// functions implementation
+
 int main()
 {
 	short choice = -1;
@@ -22,7 +16,7 @@ int main()
 		// choose option
 		switch (choice)
 		{
-		case 0: // add to archive file
+		case ADD_TO_ARCHIVE_MENU_OPERATION:
 		{
 			TCHAR pathToFileForArch[MAX_PATH] = { '\0' };
 			TCHAR pathToNewArch[MAX_PATH] = { '\0' };
@@ -34,7 +28,7 @@ int main()
 			StartArchiving(pathToFileForArch, pathToNewArch);
 
 		}break;
-		case 1: // extract files from archive
+		case EXTRACT_FILES_MENU_OPERATION:
 		{
 			TCHAR pathToExtractArch[MAX_PATH] = { '\0' };
 			TCHAR pathToExistArch[MAX_PATH] = { '\0' };
@@ -45,7 +39,7 @@ int main()
 			scanf_s("%s", pathToExtractArch, MAX_PATH);
 			StartExtracting(pathToExistArch, pathToExtractArch);
 		} break;
-		case 2: // Exit
+		case EXIT_MENU_OPERATION:
 		{
 			return 0;
 		} break;
@@ -176,7 +170,7 @@ void ShowError()
 void PrintMenu()
 {
 	cout << "\t\t Menu\n";
-	cout << "\t0 - Create archive\n";
-	cout << "\t1 - Extract files from archive\n";
-	cout << "\t2 - Exit\n";
+	cout << "\t" << ADD_TO_ARCHIVE_MENU_OPERATION << " - Create archive\n";
+	cout << "\t" << EXTRACT_FILES_MENU_OPERATION << " - Extract files from archive\n";
+	cout << "\t" << EXIT_MENU_OPERATION << " - Exit\n";
 }
